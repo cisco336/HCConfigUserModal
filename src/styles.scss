@@ -1,1 +1,133 @@
 /* You can add global styles to this file, and also import other style files */
+// @import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+// Theming
+@import "~@angular/material/theming";
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat-core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$sd-primary: (
+  1: #0072ce,
+  contrast: (
+    1: white
+  )
+);
+$sd-secondary: (
+  1: #858585,
+  2: #ecebeb,
+  contrast: (
+    1: white,
+    2: #333
+  )
+);
+$sd-success: (
+  1: #38ad6a,
+  contrast: (
+    1: white
+  )
+);
+$sd-warning: (
+  1: #fbd600,
+  contrast: (
+    1: black
+  )
+);
+$sd-danger: (
+  1: #ff4646,
+  contrast: (
+    1: white
+  )
+);
+$sodimac-app-primary: mat-palette($sd-primary, 1);
+$sodimac-app-accent: mat-palette($sd-success, 1);
+$sodimac-app-secondary: mat-palette($sd-secondary, 1);
+
+// The warn palette is optional (defaults to red).
+$sodimac-app-warn: mat-palette($sd-danger, 1);
+
+// Create the theme object (a Sass map containing all of the palettes).
+$sodimac-app-theme: mat-light-theme(
+  $sodimac-app-primary,
+  // $sodimac-app-secondary,
+    $sodimac-app-accent,
+  $sodimac-app-warn
+);
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include angular-material-theme($sodimac-app-theme);
+
+html,
+body {
+  background: #efefef;
+}
+body {
+  &,
+  & * {
+    padding: 0;
+    margin: 0;
+    font-family: Helvetica, Arial, sans-serif;
+  }
+  & *:not(button span) {
+    color: #333 !important;
+  }
+  & button {
+    &.mat-primary {
+      border-radius: 0 !important;
+    }
+    & span {
+      font-size: 21px;
+    }
+  }
+}
+
+.main-wrapper {
+  height: 100vh;
+  width: 100vw;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.the-wrapper {
+  padding: 2rem;
+  background: #efefef;
+}
+
+.mat-dialog-container {
+  border-radius: 0 !important;
+  border-top: 3px solid #1565c0;
+}
+
+.HC-dialog {
+  width: 90vw;
+  max-width: 800px !important;
+  overflow-y: auto;
+  overflow-x: hidden;
+//   max-width: 90vw;
+  & mat-dialog-container {
+    padding: 0 !important;
+  }
+}
+@media screen and (max-width: 850px) {
+  .HC-dialog {
+    margin: 2rem 0;
+    height: 90vh !important;
+	}
+}
+@media screen and (max-width: 450px) {
+	.HC-dialog {
+    height: 100vh !important;
+		width: 100vw;
+	}
+}

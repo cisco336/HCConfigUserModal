@@ -1,0 +1,217 @@
+<div class="no-privileges" *ngIf="usr === ''">
+  <h2>Usted no tiene privilegios</h2>
+</div>
+
+<div *ngIf="usr !== ''" class="modal-wrapper">
+  <div class="img-container">
+    <img
+      class="mat-elevation-z4"
+      [src]="userImg || defaultImg"
+      alt="User phot"
+    />
+    <!-- <div>
+      <input id="input-file-id" multiple type="file" disabled />
+      <label
+        disabled
+        ripple
+        for="input-file-id"
+        class="mat-stroked-button mat-raised mat-primary"
+      >
+        <mat-icon>cloud_upload</mat-icon>Cargar
+      </label>
+    </div> -->
+  </div>
+  <div class="modal-form">
+    <h1 class="modal-title">
+      <span>Configuración de usuarios </span>
+      <mat-spinner
+        mode="indeterminate"
+        *ngIf="isLoading"
+        color="primary"
+        [diameter]="30"
+      ></mat-spinner>
+      <small>{{ error || null }}</small>
+    </h1>
+    <mat-form-field>
+      <input
+        #dominioInput
+        matInput
+        placeholder="Usuario dominio"
+        (blur)="getUsuarioDom(dominioInput.value)"
+      />
+      <mat-icon matSuffix>groups</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Tipo de usuarios</mat-label>
+      <mat-select
+        #tipoSelect
+        matNativeControl
+        required
+        (selectionChange)="getUserTag($event)"
+        [disabled]="dominioInput.value === ''"
+      >
+        <mat-option *ngFor="let tipo of tipoUsuario" [value]="tipo">{{
+          tipo.DESCRIPCION
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input
+        #identificacionInput
+        matInput
+        placeholder="Doc. Identificación"
+        [disabled]="tipoSelect.value === undefined"
+      />
+      <mat-icon matSuffix>assignment_ind</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Usuarios</mat-label>
+      <mat-select
+        #userTagInput
+        matNativeControl
+        required
+        [disabled]="tipoSelect.value === undefined"
+      >
+        <mat-option *ngFor="let user of userTag" [value]="user">{{
+          user.DESCRIPCION
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input
+        #nombreInput
+        matInput
+        placeholder="Nombres"
+        [disabled]="tipoSelect.value === undefined"
+      />
+      <mat-icon matSuffix>person</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input
+        #apellidoInput
+        matInput
+        placeholder="Apellidos"
+        [disabled]="tipoSelect.value === undefined"
+      />
+      <mat-icon matSuffix>person</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input
+        #passwordInput
+        matInput
+        placeholder="Contraseña"
+        [disabled]="tipoSelect.value === undefined"
+      />
+      <mat-icon matSuffix>lock</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input
+        #emailInput
+        matInput
+        placeholder="Email"
+        [disabled]="tipoSelect.value === undefined"
+      />
+      <mat-icon matSuffix>email</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Área</mat-label>
+      <mat-select
+        #areaSelect
+        matNativeControl
+        required
+        [disabled]="dominioInput.value === ''"
+      >
+        <mat-option *ngFor="let area of areas" [value]="area">{{
+          area.DESCRIPCION
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Rol</mat-label>
+      <mat-select
+        #rolSelect
+        matNativeControl
+        required
+        [disabled]="dominioInput.value === ''"
+      >
+        <mat-option *ngFor="let rol of roles" [value]="rol">{{
+          rol.DESCRIPCION
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Tienda</mat-label>
+      <mat-select
+        color="warn"
+        #tiendaSelect
+        matNativeControl
+        required
+        [disabled]="dominioInput.value === ''"
+      >
+        <mat-option *ngFor="let tienda of tiendas" [value]="tienda">{{
+          tienda.DESCRIPCION
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div class="activo-toggle">
+      <mat-slide-toggle
+        #activoToggle
+        class="example-margin"
+        color="primary"
+        aria-label="Activo"
+        [disabled]="dominioInput.value === ''"
+      >
+        Activo
+      </mat-slide-toggle>
+    </div>
+    <div class="buttons">
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="setUsuario()"
+        [disabled]="
+          dominioInput.value === '' ||
+          identificacionInput.value === '' ||
+          nombreInput.value === '' ||
+          apellidoInput.value === '' ||
+          passwordInput.value === '' ||
+          emailInput.value === '' ||
+          tipoSelect.value === undefined ||
+          areaSelect.value === undefined ||
+          rolSelect.value === undefined ||
+          tiendaSelect.value === undefined
+        "
+      >
+        <mat-icon>save</mat-icon>
+        Guardar
+      </button>
+      <button mat-stroked-button color="warn" (click)="closeDialog()">
+        <mat-icon>exit_to_app</mat-icon>
+        Cancelar
+      </button>
+    </div>
+  </div>
+</div>
+<!-- dominioInput.value === '' || -->
+
+<!-- tipoSelect.value !== undefined &&
+          identificacionInput !== undefined &&
+          userTagInput.value !== undefined &&
+          nombreInput.nvalue!== undefined &&
+          apellidoInput.value !== undefined &&
+          passwordInput.value !== undefined &&
+          emailInput.value !== undefined &&
+          areaSelect.value !== undefined &&
+          rolSelect.value !== undefined &&
+          tiendaSelect.value !== undefined -->
