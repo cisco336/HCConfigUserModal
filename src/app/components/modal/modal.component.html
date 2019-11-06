@@ -4,11 +4,16 @@
 
 <div *ngIf="usr !== ''" class="modal-wrapper">
   <div class="img-container">
-    <img
-      class="mat-elevation-z4"
-      [src]="userImg || defaultImg"
-      alt="User phot"
-    />
+    <div>
+      <img
+        class="mat-elevation-z4"
+        [src]="userImg || defaultImg"
+        alt="User phot"
+      />
+      <div class="upload-overlay" matRipple>
+        <mat-icon>cloud_upload</mat-icon>
+      </div>
+    </div>
     <!-- <div>
       <input id="input-file-id" multiple type="file" disabled />
       <label
@@ -21,7 +26,7 @@
       </label>
     </div> -->
   </div>
-  <div class="modal-form">
+  <div class="modal-form" [formGroup]="form">
     <h1 class="modal-title">
       <span>Configuración de usuarios </span>
       <mat-spinner
@@ -30,14 +35,20 @@
         color="primary"
         [diameter]="30"
       ></mat-spinner>
-      <small>{{ error || null }}</small>
+      <small
+        [ngClass]="{ 'error-small': error, 'error-success': errorSuccess }"
+        >{{ error }}</small
+      >
     </h1>
     <mat-form-field>
       <input
+        formControlName="frdominioInput"
         #dominioInput
         matInput
         placeholder="Usuario dominio"
-        (blur)="getUsuarioDom(dominioInput.value)"
+        (blur)="getUsuarioDom(dominioInput.value, 'C')"
+        (keyup.tab)="getUsuarioDom(dominioInput.value, 'C')"
+        (keyup.enter)="getUsuarioDom(dominioInput.value, 'C')"
       />
       <mat-icon matSuffix>groups</mat-icon>
     </mat-form-field>
@@ -47,10 +58,10 @@
       <mat-select
         #tipoSelect
         matNativeControl
-        required
         (selectionChange)="getUserTag($event)"
-        [disabled]="dominioInput.value === ''"
+        formControlName="frtipoSelect"
       >
+        <mat-option>--</mat-option>
         <mat-option *ngFor="let tipo of tipoUsuario" [value]="tipo">{{
           tipo.DESCRIPCION
         }}</mat-option>
@@ -59,26 +70,40 @@
 
     <mat-form-field>
       <input
+        formControlName="fridentificacionInput"
         #identificacionInput
         matInput
         placeholder="Doc. Identificación"
-        [disabled]="tipoSelect.value === undefined"
       />
       <mat-icon matSuffix>assignment_ind</mat-icon>
     </mat-form-field>
 
-    <mat-form-field>
-      <mat-label>Usuarios</mat-label>
-      <mat-select
+    <mat-form-field class="proveedor-field">
+      <mat-label>Proveedor</mat-label>
+      <input
+        matInput
+        placeholder="Proveedor"
+        formControlName="frProveedor"
+        [matAutocomplete]="autocompleteProveedor"
+      />
+      <mat-autocomplete
         #userTagInput
-        matNativeControl
-        required
-        [disabled]="tipoSelect.value === undefined"
+        #autocompleteProveedor="matAutocomplete"
+        [displayWith]="displayFilteredProveedor"
       >
-        <mat-option *ngFor="let user of userTag" [value]="user">{{
-          user.DESCRIPCION
-        }}</mat-option>
-      </mat-select>
+        <mat-option>--</mat-option>
+        <mat-option
+          *ngFor="let user of filteredUserTag | async"
+          [value]="user"
+          >{{ user.DESCRIPCION }}</mat-option
+        >
+      </mat-autocomplete>
+      <mat-spinner
+        mode="indeterminate"
+        *ngIf="prLoading"
+        color="primary"
+        [diameter]="20"
+      ></mat-spinner>
     </mat-form-field>
 
     <mat-form-field>
@@ -86,7 +111,7 @@
         #nombreInput
         matInput
         placeholder="Nombres"
-        [disabled]="tipoSelect.value === undefined"
+        formControlName="frnombreInput"
       />
       <mat-icon matSuffix>person</mat-icon>
     </mat-form-field>
@@ -96,19 +121,9 @@
         #apellidoInput
         matInput
         placeholder="Apellidos"
-        [disabled]="tipoSelect.value === undefined"
+        formControlName="frapellidoInput"
       />
       <mat-icon matSuffix>person</mat-icon>
-    </mat-form-field>
-
-    <mat-form-field>
-      <input
-        #passwordInput
-        matInput
-        placeholder="Contraseña"
-        [disabled]="tipoSelect.value === undefined"
-      />
-      <mat-icon matSuffix>lock</mat-icon>
     </mat-form-field>
 
     <mat-form-field>
@@ -116,52 +131,75 @@
         #emailInput
         matInput
         placeholder="Email"
-        [disabled]="tipoSelect.value === undefined"
+        formControlName="fremailInput"
       />
       <mat-icon matSuffix>email</mat-icon>
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Área</mat-label>
-      <mat-select
+      <!-- <mat-label>Área</mat-label> -->
+      <input
+        matInput
+        placeholder="Área"
+        formControlName="frareaSelect"
+        [matAutocomplete]="autocompleteArea"
+      />
+      <mat-autocomplete
         #areaSelect
         matNativeControl
-        required
-        [disabled]="dominioInput.value === ''"
+        #autocompleteArea="matAutocomplete"
+        [displayWith]="displayFilteredProveedor"
       >
-        <mat-option *ngFor="let area of areas" [value]="area">{{
+        <mat-option>--</mat-option>
+        <mat-option *ngFor="let area of filteredAreas | async" [value]="area">{{
           area.DESCRIPCION
         }}</mat-option>
-      </mat-select>
+      </mat-autocomplete>
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Rol</mat-label>
-      <mat-select
+      <!-- <mat-label>Rol</mat-label> -->
+      <input
+        matInput
+        placeholder="Rol"
+        formControlName="frrolSelect"
+        [matAutocomplete]="autocompleteRol"
+      />
+      <mat-autocomplete
         #rolSelect
         matNativeControl
-        required
-        [disabled]="dominioInput.value === ''"
+        #autocompleteRol="matAutocomplete"
+        [displayWith]="displayFilteredProveedor"
       >
-        <mat-option *ngFor="let rol of roles" [value]="rol">{{
+        <mat-option>--</mat-option>
+        <mat-option *ngFor="let rol of filteredRoles | async" [value]="rol">{{
           rol.DESCRIPCION
         }}</mat-option>
-      </mat-select>
+      </mat-autocomplete>
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Tienda</mat-label>
-      <mat-select
+      <!-- <mat-label>Tienda</mat-label> -->
+      <input
+        matInput
+        placeholder="Tienda"
+        formControlName="frtiendaSelect"
+        [matAutocomplete]="autocompleteTienda"
+      />
+      <mat-autocomplete
         color="warn"
         #tiendaSelect
         matNativeControl
-        required
-        [disabled]="dominioInput.value === ''"
+        #autocompleteTienda="matAutocomplete"
+        [displayWith]="displayFilteredProveedor"
       >
-        <mat-option *ngFor="let tienda of tiendas" [value]="tienda">{{
-          tienda.DESCRIPCION
-        }}</mat-option>
-      </mat-select>
+        <mat-option>--</mat-option>
+        <mat-option
+          *ngFor="let tienda of filteredTiendas | async"
+          [value]="tienda"
+          >{{ tienda.DESCRIPCION }}</mat-option
+        >
+      </mat-autocomplete>
     </mat-form-field>
 
     <div class="activo-toggle">
@@ -170,7 +208,7 @@
         class="example-margin"
         color="primary"
         aria-label="Activo"
-        [disabled]="dominioInput.value === ''"
+        formControlName="fractivoToggle"
       >
         Activo
       </mat-slide-toggle>
@@ -178,20 +216,10 @@
     <div class="buttons">
       <button
         mat-raised-button
+        #saveButton
         color="primary"
         (click)="setUsuario()"
-        [disabled]="
-          dominioInput.value === '' ||
-          identificacionInput.value === '' ||
-          nombreInput.value === '' ||
-          apellidoInput.value === '' ||
-          passwordInput.value === '' ||
-          emailInput.value === '' ||
-          tipoSelect.value === undefined ||
-          areaSelect.value === undefined ||
-          rolSelect.value === undefined ||
-          tiendaSelect.value === undefined
-        "
+        [disabled]="form.invalid"
       >
         <mat-icon>save</mat-icon>
         Guardar
@@ -215,3 +243,15 @@
           areaSelect.value !== undefined &&
           rolSelect.value !== undefined &&
           tiendaSelect.value !== undefined -->
+
+<!-- [disabled]="
+          dominioInput.value === '' ||
+          identificacionInput.value === '' ||
+          nombreInput.value === '' ||
+          apellidoInput.value === '' ||
+          passwordInput.value === '' ||
+          emailInput.value === '' ||
+          tipoSelect.value === undefined ||
+          areaSelect.value === undefined ||
+          rolSelect.value === undefined ||
+          tiendaSelect.value === undefined -->

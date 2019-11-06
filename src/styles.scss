@@ -1,3 +1,4 @@
+@import "~@ng-select/ng-select/themes/material.theme.css";
 /* You can add global styles to this file, and also import other style files */
 // @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 
@@ -65,6 +66,29 @@ $sodimac-app-theme: mat-light-theme(
 // that you are using.
 @include angular-material-theme($sodimac-app-theme);
 
+// @font-face {
+//   font-family: "Material Icons";
+//   font-style: normal;
+//   font-weight: 400;
+//   src: url(./assets/fonts/google/icons.woff2) format("woff2");
+// }
+
+// .material-icons {
+//   font-family: "Material Icons";
+//   font-weight: normal;
+//   font-style: normal;
+//   font-size: 24px;
+//   line-height: 1;
+//   letter-spacing: normal;
+//   text-transform: none;
+//   display: inline-block;
+//   white-space: nowrap;
+//   word-wrap: normal;
+//   direction: ltr;
+//   -webkit-font-feature-settings: "liga";
+//   -webkit-font-smoothing: antialiased;
+// }
+
 html,
 body {
   background: #efefef;
@@ -111,23 +135,40 @@ body {
 
 .HC-dialog {
   width: 90vw;
-  max-width: 800px !important;
+  max-width: 900px !important;
   overflow-y: auto;
   overflow-x: hidden;
-//   max-width: 90vw;
+  &::-webkit-scrollbar {
+    width: 6px;
+    background-color: #f5f5f5;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #adadad;
+  }
+
   & mat-dialog-container {
     padding: 0 !important;
+    &::-webkit-scrollbar {
+      width: 6px;
+      background-color: #f5f5f5;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #adadad;
+    }
   }
 }
 @media screen and (max-width: 850px) {
   .HC-dialog {
     margin: 2rem 0;
     height: 90vh !important;
-	}
+    & mat-dialog-container {
+      border: none;
+    }
+  }
 }
 @media screen and (max-width: 450px) {
-	.HC-dialog {
+  .HC-dialog {
     height: 100vh !important;
-		width: 100vw;
-	}
+    width: 100vw;
+  }
 }

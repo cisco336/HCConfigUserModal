@@ -1,3 +1,10 @@
+.proveedor-field {
+  & mat-spinner {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+}
 .no-privileges {
   margin: 1rem 0;
   border-radius: 0;
@@ -33,6 +40,22 @@
     grid-row: 2;
     font-size: 40%;
     color: rgb(180, 0, 0);
+    visibility: hidden;
+    height: 20px;
+    z-index: -1;
+    opacity: 0;
+    transition: all 0.2s ease-out;
+    &.error-small {
+      opacity: 1;
+      visibility: visible;
+      z-index: 1000;
+    }
+    &.error-success {
+      color: #29804f;
+      visibility: visible;
+      z-index: 1000;
+      opacity: 1;
+    }
   }
 }
 .modal-wrapper {
@@ -41,6 +64,10 @@
   grid-template-columns: min-content 1fr;
   grid-gap: 1rem;
 
+  &::-webkit-scrollbar {
+    width: 6px;
+    background-color: #f5f5f5;
+  }
   & .img-container {
     padding: 0 24px 0 24px;
     // border-right: 1px solid rgba(100, 100, 100, .2);
@@ -49,12 +76,41 @@
     flex-flow: column nowrap;
     align-items: center;
     justify-content: center;
-
-    & img {
+    & > div:first-child {
       margin-bottom: 10px;
-      width: 100px;
-      height: 100px;
-      border-radius: 100%;
+      position: relative;
+      &,
+      & .upload-overlay,
+      & img {
+        width: 100px;
+        height: 100px;
+        border-radius: 100%;
+      }
+      &:hover .upload-overlay {
+        z-index: 3;
+        opacity: 1;
+        cursor: pointer;
+      }
+      & .upload-overlay {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        transition: all 0.2s ease-out;
+        background: rgba(0, 0, 0, 0.712);
+        color: white;
+        opacity: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      & img {
+        z-index: 2;
+        width: 100px;
+        height: 100px;
+        border-radius: 100%;
+        position: absolute;
+        cursor: pointer;
+      }
     }
 
     & > div {
@@ -90,8 +146,13 @@
     width: 100%;
     display: grid;
     grid-gap: 1rem;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 180px));
+    grid-template-columns: repeat(auto-fit, minmax(180px, 200px));
     grid-template-rows: repeat(5, min-content);
+
+    & mat-form-field * {
+      white-space: nowrap !important;
+      text-overflow: ellipsis !important;
+    }
 
     // & mat-form-field {
     //     &:nth-child(4) {

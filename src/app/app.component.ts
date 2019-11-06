@@ -20,8 +20,6 @@ export class AppComponent implements OnInit {
       data: { disableClose: true, data: "data" },
       panelClass: ["HC-dialog", "mat-elevation-z10"]
     });
-    dialogRef.afterClosed().subscribe(result => {
-      console.log("result: ", result);
-    });
+    dialogRef.afterClosed().subscribe();
   }
 }

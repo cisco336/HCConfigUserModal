@@ -1,44 +1,65 @@
-import { Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root'
 })
 export class DataService {
   // API Local
-  API = "http://localhost/Abastecimiento/Servicios/Usuarios/api";
+  // API = "http://localhost/Abastecimiento/Servicios/Usuarios/api";
+
+  // APIs
+  // DEV
+  API = 'http://10.23.14.164:9000/Servicios/Seguridad_1.0.0/api';
+
+  // QA
+  // API = "http://10.23.14.163:9000/Servicios/Seguridad_1.0.0/api"
+
+  // PROD
+  // API = "http://10.23.18.163:9000/Servicios/Seguridad_1.0.0/api"
+
+  // TEST
+  // API = "http://10.23.14.94:9000/Servicios/Seguridad_1.0.0/api"
 
   // Calls
   // Autenticacion
-  userAuthCall = "/Autenticacion/UserAuth?usuario=";
+  userAuthCall = '/Autenticacion/UserAuth?usuario=';
 
   // Usuario
-  userInfoCall = "/Usuario/UserInfo?usuario=";
-  tipoUsuarioCall = "/Usuario/GetTipoUsuario";
-  areasCall = "/Usuario/GetAreas";
-  rolesCall = "/Usuario/GetRoles";
-  tiendasCall = "/Usuario/GetTiendas";
-  usuariosCall = "/Usuario/GetUsuarios/";
-  setUsuarioCall = "/Usuario/SetUsuario?";
-  getUsuarioDomCall = "/Usuario/GetUsuarioDom/";
+  userInfoCall = '/Usuario/UserInfo?usuario=';
+  tipoUsuarioCall = '/Usuario/GetTipoUsuario';
+  areasCall = '/Usuario/GetAreas';
+  rolesCall = '/Usuario/GetRoles';
+  tiendasCall = '/Usuario/GetTiendas';
+  usuariosCall = '/Usuario/GetProveedoresUsuario/';
+  setUsuarioCall = '/Usuario/SetUsuario';
+  getUsuarioDomCall = '/Usuario/GetUsuarioDom/';
 
-  token = new BehaviorSubject<string>("");
-  
+  // Subscription keys
+  // DEV
+  subscriptionKey = 'dfeb9e69860f45258647cc7ba45fb040';
+  // QA
+  // subscriptionKey = "442c55ae313642028c9eb69dc4220dad";
+  // PROD
+  // subscriptionKey = "209fa70e5b0c4b5c8bddaf0aa54b8e19";
+
+  token = new BehaviorSubject<string>('');
+
   constructor(private http: HttpClient) {}
 
   protected generateBasicHeaders(): HttpHeaders {
     return new HttpHeaders({
-      "Content-Type": "application/json",
-      "Ocp-Apim-Subscription-Key": "9b33c33d833340e0839653420edf6a89",
+      'Content-Type': 'application/json',
+      'Ocp-Apim-Subscription-Key': this.subscriptionKey
     });
   }
 
   protected generateBasicHeadersJWT(): HttpHeaders {
     return new HttpHeaders({
-      "Content-Type": "application/json",
-      "Ocp-Apim-Subscription-Key": "dfeb9e69860f45258647cc7ba45fb040",
-      Authorization: this.token.value,
+      'Content-Type': 'application/json',
+      'Ocp-Apim-Subscription-Key': this.subscriptionKey,
+      Authorization: this.token.value
     });
   }
 
@@ -76,51 +97,18 @@ export class DataService {
     });
   }
   getUsuarios(data) {
-    console.log(data)
-    return this.http.get(this.API + this.usuariosCall + '/' + data, {
+    return this.http.get(this.API + this.usuariosCall + data, {
       headers: this.generateBasicHeaders()
     });
   }
   setUsuario(data) {
-    // data debe contener
-      // p_Transaccion: '',
-      // p_Id_Usuario: '',
-      // p_Usuario_Dominio: '',
-      // p_Nombres: '',
-      // p_Apellidos: '',
-      // p_Documento: '',
-      // p_Id_Tipo_Usuario: '',
-      // p_Id_Rol: '',
-      // p_Org_Lvl_Child: '',
-      // p_Vpc_Tech_Key: '',
-      // p_Skyn_Style: '',
-      // p_Id_Area: '',
-      // p_Email: '',
-      // p_Clave: '',
-      // p_Ruta_Foto: '',
-      // p_Activo: '',
-      // p_Usuario: ''
-    return this.http.get(this.API + this.setUsuarioCall + data, {
+    return this.http.post(this.API + this.setUsuarioCall, data, {
       headers: this.generateBasicHeaders()
     });
   }
   getUsuarioDom(data) {
-
-    // {
-    //   "UserName":"ACEL03",
-    //   "Password":"@cel032018"
-    // }
-    // {
-    //   "Estado": true,
-    //   "Mensaje": "Sentencia ejecutada con éxito.",
-    //   "Value": {
-    //     "Nombres": "Jair Alejandro",
-    //     "Apellidos": "Acevedo Londono",
-    //     "Documento": "4519300",
-    //     "Email": "jacevedo@homecenter.co"
-    //   }
-    // }
-    
-    return this.http.post('http://localhost/Aplicaciones/Usuarios/api' + this.getUsuarioDomCall, data, { headers: this.generateBasicHeaders() })
+    return this.http.get(this.API + this.getUsuarioDomCall + data, {
+      headers: this.generateBasicHeaders()
+    });
   }
 }
